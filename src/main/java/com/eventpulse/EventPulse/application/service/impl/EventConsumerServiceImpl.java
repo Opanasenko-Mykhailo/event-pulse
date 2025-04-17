@@ -20,15 +20,8 @@ public class EventConsumerServiceImpl implements EventConsumerService {
     public void consume(Event event) {
         redisStatsService.incrementEventCount(event.getEventType());
         eventProcessor.process(event);
-        logStats(event);
-    }
-
-    private void logStats(Event event) {
-        log.info("📝 Оброблено подію: {}", event);
-
-        for (String type : new String[]{"login", "register", "logout"}) {
-            String count = redisStatsService.getEventCount(type);
-            log.info("📊 Статистика - Події типу '{}': {}", type, count != null ? count : "0");
+        if ("notification".equals(event.getEventType())) {
+            log.info("📧 Імітація надсилання сповіщення користувачу [{}]: Отримано нове сповіщення", event.getUserId());
         }
     }
 }

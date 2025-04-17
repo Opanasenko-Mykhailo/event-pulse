@@ -17,19 +17,22 @@ public class KafkaEventConsumer {
     private final EventConsumerService eventConsumerService;
     private final ObjectMapper objectMapper;
     private final EventSender eventSender;
+    private static final long DELAY_MS = 200;
 
     @KafkaListener(topics = "user-events", groupId = "event-group")
     public void listen(String message) {
         try {
-            log.info("📥 Отримано повідомлення з Kafka: {}", message);
             Event event = objectMapper.readValue(message, Event.class);
-            log.info("✅ Подія успішно перетворена: {}", event);
+            log.info("📥 [Kafka Consumer] Отримано подію з топіка user-events: {}", event);
+
             eventConsumerService.consume(event);
-            log.info("📝 Оброблено подію в Kafka Consumer: {}", event);
+            log.info("🔄 [Kafka Consumer] Подію передано в EventConsumerService: {}", event);
+
             eventSender.send(event);
-            log.info("📤 Подія відправлена до RabbitMQ: {}", event);
+            log.info("📤 [Kafka Consumer] Подію відправлено в RabbitMQ: {}", event);
+            Thread.sleep(DELAY_MS);
         } catch (Exception e) {
-            log.error("❌ Помилка при обробці події: {}", message, e);
+            log.error("❌ [Kafka Consumer] Помилка при обробці події: {}, {}", message, e.getMessage());
         }
     }
 }

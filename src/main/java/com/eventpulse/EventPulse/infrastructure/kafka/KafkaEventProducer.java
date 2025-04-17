@@ -19,12 +19,10 @@ public class KafkaEventProducer implements EventProducer {
     public void produce(Event event) {
         try {
             String eventJson = objectMapper.writeValueAsString(event);
-
             kafkaTemplate.send("user-events", event.getUserId(), eventJson);
-
-            log.info("📤 Подія успішно відправлена до Kafka: {}", eventJson);
+            log.info("🚀 [Kafka Producer] Подію відправлено в топік user-events: {}", event);
         } catch (Exception e) {
-            log.error("❌ Не вдалося відправити подію: {}", event, e);
+            log.error("❌ [Kafka Producer] Помилка при відправленні події в Kafka: {}, {}", event, e.getMessage());
         }
     }
 }

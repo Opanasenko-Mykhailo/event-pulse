@@ -16,13 +16,6 @@ public class RedisStatsService {
     public void incrementEventCount(String eventType) {
         String key = "event:count:" + eventType;
         Long newCount = redisTemplate.opsForValue().increment(key);
-        log.info("🔼 Лічильник події '{}' збільшено на 1. Нове значення: {}", eventType, newCount);
-    }
-
-    public String getEventCount(String eventType) {
-        String key = "event:count:" + eventType;
-        String count = redisTemplate.opsForValue().get(key);
-        log.info("📊 Поточний лічильник події '{}': {}", eventType, count);
-        return count;
+        log.info("🔼 [Redis] Лічильник події '{}' збільшено на 1. Нове значення: {}", eventType, newCount);
     }
 }

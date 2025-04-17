@@ -19,12 +19,13 @@ public class RabbitMQEventProcessor {
     public void process(String message) {
         try {
             Event event = objectMapper.readValue(message, Event.class);
-
+            log.info("📬 [RabbitMQ Processor] Отримано подію з черги event-processing-queue: {}", event);
             eventProcessorService.process(event);
-
-            log.info("✅ Подія успішно оброблена з RabbitMQ: {}", event);
+            log.info("✅ [RabbitMQ Processor] Подію успішно оброблено EventProcessorService: {}", event);
+            log.info("_________________________________________________________________________" +
+                    "__________________________________________________________________________");
         } catch (Exception e) {
-            log.error("❌ Не вдалося обробити подію з RabbitMQ: {}", message, e);
+            log.error("❌ [RabbitMQ Processor] Помилка при обробці події: {}, {}", message, e.getMessage());
         }
     }
 }

@@ -20,12 +20,10 @@ public class RabbitMQEventProducer implements EventSender {
     public void send(Event event) {
         try {
             String json = objectMapper.writeValueAsString(event);
-
             rabbitTemplate.convertAndSend("event-processing-queue", json);
-
-            log.info("📤 Подія успішно відправлена до RabbitMQ: {}", json);
+            log.info("🐰 [RabbitMQ Producer] Подію відправлено в чергу event-processing-queue: {}", event);
         } catch (Exception e) {
-            log.error("❌ Не вдалося відправити подію до RabbitMQ: {}", event, e);
+            log.error("❌ [RabbitMQ Producer] Помилка при відправленні події в RabbitMQ: {}, {}", event, e.getMessage());
         }
     }
 }
